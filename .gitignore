@@ -1,2 +1,8 @@
 # binaries
 *.exe
+
+# IDEA ide settings
+.idea/
+
+# vs code
+.code/
