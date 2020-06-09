@@ -57,7 +57,7 @@ times`,
 	// calculate word size in bits
 	var wordSizeBits = wordSize * byteSizeInBits
 	// calculate metadata size in bits
-	var metadataSizeBits = metadataSizeBytes & byteSizeInBits
+	var metadataSizeBits = metadataSizeBytes * byteSizeInBits
 
 	// calculate remaining bits after metadata and word
 	var availableBits uint64 = capacityBits - (wordSizeBits + metadataSizeBits)
