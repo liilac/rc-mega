@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"math/big"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -27,11 +28,11 @@ import (
 
 var cfgFile string
 
-var capacityBytes uint64
+var capacityBytes int64
 var word string
-var metadataSizeBytes uint64
+var metadataSizeBytes int64
 
-const byteSizeInBits uint64 = 8
+const byteSizeInBits int64 = 8
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -53,21 +54,24 @@ times`,
 	// calculate number of bits in capacity
 	var capacityBits = capacityBytes * byteSizeInBits
 	// calculate size of word in bytes
-	var wordSize uint64 = uint64(len(word))
+	var wordSize int64 = int64(len(word))
 	// calculate word size in bits
 	var wordSizeBits = wordSize * byteSizeInBits
 	// calculate metadata size in bits
 	var metadataSizeBits = metadataSizeBytes * byteSizeInBits
 
 	// calculate remaining bits after metadata and word
-	var availableBits uint64 = capacityBits - (wordSizeBits + metadataSizeBits)
+	var availableBits int64 = capacityBits - (wordSizeBits + metadataSizeBits)
+  // big integer variant
+  var availableBitsBig = big.NewInt(availableBits)
 
 	// calculate max number that will fit in availableBits
-	var numWillFit = Power(2, availableBits)
+	var numWords *big.Int = big.NewInt(2)
+  numWords.Exp(numWords, availableBitsBig, nil)
 
 	// print output
 	fmt.Printf("Guess what! The number of times \"%v\" will fit into %v bytes is: %v\n", word, capacityBytes,
-	numWillFit)
+	numWords.Text(10))
 },
 }
 
@@ -86,10 +90,10 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().Uint64VarP(&capacityBytes, "capacity", "c", 16 * 1024 * 1024,
-		"number of bytes to fit word into (default is 16 * 1024^2 for 16MiB)")
+	rootCmd.PersistentFlags().Int64VarP(&capacityBytes, "capacity", "c", 16 * 1024,
+		"number of bytes to fit word into (default is 16 * 1024 for 16KiB)")
 	rootCmd.PersistentFlags().StringVarP(&word, "word", "w", "sophie", "word to fit into capacity (default is sophie)")
-	rootCmd.PersistentFlags().Uint64VarP(&metadataSizeBytes, "metadata-size", "m", 1024,
+	rootCmd.PersistentFlags().Int64VarP(&metadataSizeBytes, "metadata-size", "m", 1024,
 		"metadata size in bytes (default is 1024 for 1KiB)")
 }
 
