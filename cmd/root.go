@@ -86,8 +86,8 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().Uint64VarP(&capacityBytes, "capacity", "c", 1024e12,
-		"number of bytes to fit word into (default is 1024e12 for 1TiB)")
+	rootCmd.PersistentFlags().Uint64VarP(&capacityBytes, "capacity", "c", 16 * 1024 * 1024,
+		"number of bytes to fit word into (default is 16 * 1024^2 for 16MiB)")
 	rootCmd.PersistentFlags().StringVarP(&word, "word", "w", "sophie", "word to fit into capacity (default is sophie)")
 	rootCmd.PersistentFlags().Uint64VarP(&metadataSizeBytes, "metadata-size", "m", 1024,
 		"metadata size in bytes (default is 1024 for 1KiB)")
